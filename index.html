@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BuildFire Login Page</title>
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link href="signin.css" rel="stylesheet" />
+
+    <script type="text/javascript"></script>
+  </head>
+  <body>
+    <div class="container" id="registerForm">
+      <form class="form-signin">
+        <div class="col-lg-6 row marketing">
+          <h2>Register</h2>
+        </div>
+        <br />
+
+        <div>
+          <input
+            type="text"
+            name="firstName"
+            id="inputFirstName"
+            class="form-control"
+            placeholder="First Name"
+            required
+          />
+        </div>
+        <br />
+        <div>
+          <input
+            type="text"
+            name="lastName"
+            id="inputLastName"
+            class="form-control"
+            placeholder="Last Name"
+            required
+          />
+        </div>
+        <br />
+
+        <div>
+          <input
+            type="email"
+            name="username"
+            id="inputEmail"
+            class="form-control"
+            placeholder="Email address"
+            required
+            autofocus
+          />
+        </div>
+        <br />
+
+        <div>
+          <input
+            type="password"
+            name="password"
+            id="inputPassword"
+            class="form-control"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <br />
+
+        <div>
+          <button
+            class="btn btn-lg btn-primary btn-block"
+            type="submit"
+            onclick=" event.preventDefault(); createUser();"
+          >
+            Register
+          </button>
+        </div>
+        <br />
+        <div>
+          <button type="button" id="verifyLink" class="btn btn-md btn-link">
+            Verify Security Code
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="container" id="verifyForm">
+      <form class="form-signin">
+        <div class="col-lg-6 row marketing">
+          <h2>Verify</h2>
+        </div>
+        <br />
+
+        <div>
+          <input
+            type="email"
+            name="username"
+            id="inputEmail"
+            class="form-control"
+            placeholder="Email address"
+            required
+            autofocus
+          />
+        </div>
+        <br />
+
+        <div>
+          <input
+            type="password"
+            name="passCode"
+            id="inputPassCode"
+            class="form-control"
+            placeholder="Verification Code"
+            required
+          />
+        </div>
+        <br />
+
+        <div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">
+            Verify
+          </button>
+        </div>
+        <br />
+        <div>
+          <button
+            type="button"
+            id="registerLink"
+            class="btn btn-md btn-link"
+            onclick=" event.preventDefault();"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#verifyForm").hide();
+        $("#verifyLink").click(function() {
+          $("#registerForm").hide("easeOut");
+          $("#verifyForm").show("easeOut");
+        });
+        $("#registerLink").click(function() {
+          $("#verifyForm").hide("easeOut");
+          $("#registerForm").show("easeOut");
+        });
+      });
+      function afterRegister(username, access_token) {
+        var result = {
+          status: "success",
+          user: { username: username, access_token: access_token }
+        };
+        window.parent.postMessage(JSON.stringify(result), "*");
+      }
+      function createUser() {
+        //call your register api to create user
+        //on callback call afterRegister with passing the username and access_token
+
+        var settings = {
+          async: true,
+          crossDomain: true,
+          url: "https://buildfire.zekiexperts.com/Token",
+          method: "POST",
+          headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            "cache-control": "no-cache",
+            "postman-token": "bc8e8c56-9f3b-35ab-c43a-3e9918fd04d7",
+            "Access-Control-Allow-Origin": "*"
+          },
+          data: {
+            grant_type: "password",
+            username: "admin@example.com",
+            password: "adminpass",
+            client_id: "test",
+            client_secret: "test"
+          }
+        };
+        $.ajax(settings).done(function(response) {
+          // console.log(response);
+          afterRegister(response.userName, response.access_token);
+        });
+      }
+    </script>
+  </body>
+</html>
